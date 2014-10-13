@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 public class SampleActivity extends Activity {
 
-    private TextView mOutput, mAutofitOutput;
+    private TextView mOutput, mAutofitOutput, mAnotherAutofitOutput;
 
     /** Called when the activity is first created. */
     @Override
@@ -19,6 +20,7 @@ public class SampleActivity extends Activity {
 
         mOutput = (TextView)findViewById(R.id.output);
         mAutofitOutput = (TextView)findViewById(R.id.output_autofit);
+        mAnotherAutofitOutput = (TextView) findViewById(R.id.another_output_autofit);
 
         ((EditText)findViewById(R.id.input)).addTextChangedListener(new TextWatcher() {
             @Override
@@ -30,6 +32,24 @@ public class SampleActivity extends Activity {
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 mOutput.setText(charSequence);
                 mAutofitOutput.setText(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // do nothing
+            }
+        });
+
+        View v = findViewById(R.id.another_input);
+        ((EditText)findViewById(R.id.another_input)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                // do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                mAnotherAutofitOutput.setText(charSequence);
             }
 
             @Override

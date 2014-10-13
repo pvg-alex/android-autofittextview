@@ -5,5 +5,6 @@
         <attr name="minTextSize" format="dimension" />
         <attr name="precision" format="float" />
         <attr name="sizeToFit" format="boolean" />
+        <attr name="group" format="integer"/>
     </declare-styleable>
 </resources>
