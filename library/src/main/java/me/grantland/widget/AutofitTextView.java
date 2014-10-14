@@ -53,32 +53,29 @@ public class AutofitTextView extends TextView implements AutofitHelper.OnTextSiz
                     R.styleable.AutofitTextView,
                     defStyle,
                     0);
-            int group = ta.getInteger(R.styleable.AutofitTextView_group, Integer.MIN_VALUE);
+            int groupId = ta.getResourceId(R.styleable.AutofitTextView_group, Integer.MIN_VALUE);
             ta.recycle();
 
-            if(group != Integer.MIN_VALUE) {
-                manageGroup(group);
+            if(groupId != Integer.MIN_VALUE) {
+                manageGroup(groupId);
             }
         }
     }
 
-    private void manageGroup(int group) {
-        AutofitGroup autofitGroup = getAutofitGroup(group);
+    private void manageGroup(int groupId) {
+        AutofitGroup autofitGroup = getAutofitGroup(groupId);
         autofitGroup.add(this);
     }
 
-    private AutofitGroup getAutofitGroup(int group) {
+    private AutofitGroup getAutofitGroup(int groupId) {
         Activity parentActivity = (Activity) getContext();
         View root = parentActivity.findViewById(android.R.id.content);
-        SparseArray<AutofitGroup> autofitGroups = (SparseArray<AutofitGroup>) root.getTag();
-        if (autofitGroups == null) {
-            autofitGroups = new SparseArray<AutofitGroup>();
-            root.setTag(autofitGroups);
+        AutofitGroup autofitGroup = (AutofitGroup) root.getTag(groupId);
+        if (autofitGroup == null) {
+            autofitGroup = new AutofitGroup();
+            root.setTag(groupId, autofitGroup);
         }
-        if (autofitGroups.get(group) == null) {
-            autofitGroups.append(group, new AutofitGroup());
-        }
-        return autofitGroups.get(group);
+        return autofitGroup;
     }
 
     // Getters and Setters

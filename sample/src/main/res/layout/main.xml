@@ -49,7 +49,7 @@
             android:gravity="center"
             android:singleLine="true"
             autofit:minTextSize="8sp"
-            autofit:group="1"
+            autofit:group="@id/output_autofit"
             />
         <me.grantland.widget.AutofitTextView
             android:id="@+id/another_output_autofit"
@@ -60,7 +60,7 @@
             android:gravity="center"
             android:singleLine="true"
             autofit:minTextSize="8sp"
-            autofit:group="1"
+            autofit:group="@id/output_autofit"
             />
     </LinearLayout>
 </ScrollView>
