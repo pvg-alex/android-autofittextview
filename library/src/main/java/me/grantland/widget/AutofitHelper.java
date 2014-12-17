@@ -87,17 +87,18 @@ public class AutofitHelper {
 
     /**
      * Re-sizes the textSize of the TextView so that the text fits within the bounds of the View.
+     * @return text size which will fit inside the text view
      */
-    private static void autofit(TextView view, TextPaint paint, float minTextSize, float maxTextSize,
-            int maxLines, float precision) {
+    private static float autofit(TextView view, TextPaint paint, float minTextSize, float maxTextSize,
+            int maxLines, float precision, boolean shouldApplySizeDirectly) {
         if (maxLines <= 0 || maxLines == Integer.MAX_VALUE) {
             // Don't auto-size since there's no limit on lines.
-            return;
+            return view.getTextSize();
         }
 
         int targetWidth = view.getWidth() - view.getPaddingLeft() - view.getPaddingRight();
         if (targetWidth <= 0) {
-            return;
+            return view.getTextSize();
         }
 
         CharSequence text = view.getText();
@@ -132,7 +133,10 @@ public class AutofitHelper {
             size = minTextSize;
         }
 
-        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        if (shouldApplySizeDirectly) {
+            view.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        }
+        return size;
     }
 
     /**
@@ -222,6 +226,10 @@ public class AutofitHelper {
      * Original textSize of the TextView.
      */
     private float mTextSize;
+    /**
+     * Calculated textSize of the TextView.
+     */
+    private float mSizeToFitTextSize;
 
     private int mMaxLines;
     private float mMinTextSize;
@@ -229,6 +237,7 @@ public class AutofitHelper {
     private float mPrecision;
 
     private boolean mEnabled;
+    private boolean mIsGrouped;
     private boolean mIsAutofitting;
 
     private ArrayList<OnTextSizeChangeListener> mListeners;
@@ -273,6 +282,27 @@ public class AutofitHelper {
             mListeners.remove(listener);
         }
         return this;
+    }
+
+    /**
+     * Moves helper to a grouped state
+     */
+    public void onGrouped() {
+        mIsGrouped = true;
+    }
+
+    /**
+     * @return wrapped text view
+     */
+    public TextView getTextView() {
+        return mTextView;
+    }
+
+    /**
+     * @return text size calculated by autofit
+     */
+    public float getAutofitTextSize() {
+        return mSizeToFitTextSize;
     }
 
     /**
@@ -488,15 +518,14 @@ public class AutofitHelper {
 
     private void autofit() {
         float oldTextSize = mTextView.getTextSize();
-        float textSize;
 
         mIsAutofitting = true;
-        autofit(mTextView, mPaint, mMinTextSize, mMaxTextSize, mMaxLines, mPrecision);
+        mSizeToFitTextSize = autofit(mTextView, mPaint, mMinTextSize, mMaxTextSize, mMaxLines,
+                                     mPrecision, !mIsGrouped);
         mIsAutofitting = false;
 
-        textSize = mTextView.getTextSize();
-        if (textSize != oldTextSize) {
-            sendTextSizeChange(textSize, oldTextSize);
+        if (mSizeToFitTextSize != oldTextSize) {
+            sendTextSizeChange(mSizeToFitTextSize, oldTextSize);
         }
     }
 

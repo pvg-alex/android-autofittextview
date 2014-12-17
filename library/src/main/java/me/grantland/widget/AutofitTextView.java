@@ -1,9 +1,17 @@
 package me.grantland.widget;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * A TextView that re-sizes its text to be no larger than the width of the view.
@@ -34,9 +42,51 @@ public class AutofitTextView extends TextView implements AutofitHelper.OnTextSiz
     private void init(Context context, AttributeSet attrs, int defStyle) {
         mHelper = AutofitHelper.create(this, attrs, defStyle)
                 .addOnTextSizeChangeListener(this);
+
+        checkGroup(context, attrs, defStyle);
+    }
+
+    private void checkGroup(Context context, AttributeSet attrs, int defStyle) {
+        if (attrs != null) {
+            TypedArray ta = context.obtainStyledAttributes(
+                    attrs,
+                    R.styleable.AutofitTextView,
+                    defStyle,
+                    0);
+            int groupId = ta.getResourceId(R.styleable.AutofitTextView_group, Integer.MIN_VALUE);
+            ta.recycle();
+
+            if(groupId != Integer.MIN_VALUE) {
+                manageGroup(groupId);
+            }
+        }
+    }
+
+    private void manageGroup(int groupId) {
+        AutofitGroup autofitGroup = getAutofitGroup(groupId);
+        autofitGroup.add(this);
+    }
+
+    private AutofitGroup getAutofitGroup(int groupId) {
+        Activity parentActivity = (Activity) getContext();
+        View root = parentActivity.findViewById(android.R.id.content);
+        AutofitGroup autofitGroup = (AutofitGroup) root.getTag(groupId);
+        if (autofitGroup == null) {
+            autofitGroup = new AutofitGroup();
+            root.setTag(groupId, autofitGroup);
+        }
+        return autofitGroup;
     }
 
     // Getters and Setters
+
+    /**
+     * Appends this {@link me.grantland.widget.AutofitTextView} to a group.
+     * @param group host group
+     */
+    public void setGroup(int group) {
+        manageGroup(group);
+    }
 
     /**
      * {@inheritDoc}

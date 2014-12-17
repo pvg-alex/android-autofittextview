@@ -15,6 +15,13 @@
             android:singleLine="true"
             android:hint="@string/input_hint"
             android:text="@string/example"/>
+        <EditText
+            android:id="@+id/another_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:hint="@string/input_hint"
+            android:text="@string/example"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,6 +49,18 @@
             android:gravity="center"
             android:singleLine="true"
             autofit:minTextSize="8sp"
+            autofit:group="@id/output_autofit"
+            />
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/another_output_autofit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/example"
+            android:textSize="50sp"
+            android:gravity="center"
+            android:singleLine="true"
+            autofit:minTextSize="8sp"
+            autofit:group="@id/output_autofit"
             />
     </LinearLayout>
 </ScrollView>
